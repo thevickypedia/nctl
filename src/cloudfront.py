@@ -7,9 +7,7 @@ import boto3
 import yaml
 from botocore.exceptions import ClientError
 
-from .settings import env
-
-LOGGER = logging.getLogger(__name__)
+from .settings import env, LOGGER
 
 
 class CloudFront:
@@ -109,17 +107,20 @@ class CloudFront:
                 error_response=update_response.get('ResponseMetadata')
             )
 
-        for i in itertools.count():
-            if not i:
-                time.sleep(300)
-            else:
-                time.sleep(10)
-            response = self.get_distribution()
-            with open(env.configfile, 'w') as file:
-                yaml.dump(stream=file, data=response, Dumper=yaml.SafeDumper, sort_keys=False, default_flow_style=False)
-            if response.get('Distribution', {}).get('Status', 'Not Deployed') == "Deployed":
-                LOGGER.info("CloudFront distribution has been deployed")
-                break
-            if i > 5:
-                LOGGER.warning("CloudFront distribution is taking longer than usual to propagate.")
-                return
+        try:
+            for i in itertools.count():
+                if not i:
+                    time.sleep(300)
+                else:
+                    time.sleep(10)
+                response = self.get_distribution()
+                with open(env.configfile, 'w') as file:
+                    yaml.dump(stream=file, data=response, Dumper=yaml.SafeDumper, sort_keys=False, default_flow_style=False)
+                if response.get('Distribution', {}).get('Status', 'Not Deployed') == "Deployed":
+                    LOGGER.info("CloudFront distribution has been deployed")
+                    break
+                if i > 5:
+                    LOGGER.warning("CloudFront distribution is taking longer than usual to propagate.")
+                    return
+        except KeyboardInterrupt:
+            LOGGER.warning("Cloudfront status check suspended")
