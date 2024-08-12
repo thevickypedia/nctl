@@ -10,8 +10,6 @@ from botocore.exceptions import ClientError
 from .settings import env
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.addHandler(logging.StreamHandler())
-LOGGER.setLevel(logging.DEBUG)
 
 
 class CloudFront:
