@@ -1,5 +1,5 @@
-PyYaml==6.0.2
 boto3==1.34.158
 botocore==1.34.158
 pydantic==2.8.2
 pydantic-settings==2.4.0
+PyYaml==6.0.2

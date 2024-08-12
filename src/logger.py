@@ -1,5 +1,10 @@
+import importlib
 import logging
 from multiprocessing import current_process
+
+pname = current_process().name
+if pname == "MainProcess":
+    pname = "ngrok-cloudfront"
 
 
 class AddProcessName(logging.Filter):
@@ -22,13 +27,21 @@ class AddProcessName(logging.Filter):
         return True
 
 
-LOGGER = logging.getLogger(__name__)
-DEFAULT_LOG_FORM = "%(asctime)s - %(levelname)s - [%(processName)s:%(module)s:%(lineno)d] - %(funcName)s - %(message)s"
-DEFAULT_FORMATTER = logging.Formatter(
-    datefmt="%b-%d-%Y %I:%M:%S %p", fmt=DEFAULT_LOG_FORM
-)
-HANDLER = logging.StreamHandler()
-HANDLER.setFormatter(DEFAULT_FORMATTER)
-LOGGER.addHandler(HANDLER)
-# todo: Should be within a function for process name filter to work
-LOGGER.addFilter(filter=AddProcessName(process_name=current_process().name))
+def build_logger() -> logging.Logger:
+    """Constructs a custom logger.
+
+    Returns:
+        logging.Logger:
+        Returns a reference to the logger object.
+    """
+    importlib.reload(logging)
+    logger = logging.getLogger(__name__)
+    default_formatter = logging.Formatter(
+        datefmt="%b-%d-%Y %I:%M:%S %p",
+        fmt="%(asctime)s - %(levelname)s - [%(processName)s:%(module)s:%(lineno)d] - %(funcName)s - %(message)s",
+    )
+    handler = logging.StreamHandler()
+    handler.setFormatter(default_formatter)
+    logger.addHandler(handler)
+    logger.addFilter(filter=AddProcessName(process_name=pname))
+    return logger
