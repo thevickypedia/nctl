@@ -1,13 +1,12 @@
 import json
-import logging
 import os
 import pathlib
+import shutil
 
 import yaml
 
-from src import logger, models
-
-LOGGER = logger.build_logger()
+from src import models
+from src.logger import LOGGER
 
 
 def create_ngrok_config(token: str, filename: str) -> None:
@@ -35,37 +34,36 @@ def env_loader(filename: str | os.PathLike) -> models.EnvConfig:
         Returns a reference to the ``EnvConfig`` object.
     """
     env_file = pathlib.Path(filename)
-    if env_file.suffix.lower() == ".json":
+    sfx = env_file.suffix.lower()
+    if sfx == ".json":
         with open(env_file) as stream:
             env_data = json.load(stream)
         return models.EnvConfig(**{k.lower(): v for k, v in env_data.items()})
-    elif env_file.suffix.lower() in (".yaml", ".yml"):
+    if sfx in (".yaml", ".yml"):
         with open(env_file) as stream:
             env_data = yaml.load(stream, yaml.FullLoader)
         return models.EnvConfig(**{k.lower(): v for k, v in env_data.items()})
-    elif not env_file.suffix or env_file.suffix.lower() in (
-        ".text",
-        ".txt",
-        "",
-    ):
+    if sfx in (".text", ".txt", ""):
         return models.EnvConfig.from_env_file(env_file)
-    else:
-        raise ValueError(
-            "\n\tUnsupported format for 'env_file', can be one of (.json, .yaml, .yml, .txt, .text, or null)"
-        )
+    raise ValueError(
+        "\n\tUnsupported format for 'env_file', can be one of (.json, .yaml, .yml, .txt, .text, or null)"
+    )
 
 
-def validate_env() -> None:
-    """Validates the loaded environment variables."""
-    if models.env.debug:
-        LOGGER.setLevel(logging.DEBUG)
+def run_validations() -> None:
+    """Validates the loaded environment variables and checks ngrok CLI availability."""
+    assert shutil.which(
+        cmd="ngrok"
+    ), "\n\tTo proceed, please install ngrok CLI using https://dashboard.ngrok.com/get-started/setup"
+    assert any(
+        (models.env.distribution_id, models.env.distribution_config)
+    ), "\n\tAny one of 'distribution_id' or 'distribution_config' is required"
     if models.env.distribution_config:
-        flower = str(models.env.distribution_config).lower()
-        assert (
-            flower.endswith(".yaml")
-            or flower.endswith(".yml")
-            or flower.endswith(".json")
-        ), "Config file can only be JSON or YAML"
+        assert models.env.distribution_config.suffix.lower() in (
+            ".yml",
+            ".yaml",
+            ".json",
+        ), "\n\tConfig file can only be JSON or YAML"
     if models.env.ngrok_config:
         LOGGER.info("Using ngrok config file: %s", models.env.ngrok_config)
     elif models.env.ngrok_auth:
@@ -73,7 +71,3 @@ def validate_env() -> None:
         LOGGER.info("Creating ngrok config file as %s", config_file)
         create_ngrok_config(models.env.ngrok_auth, config_file)
         models.env.ngrok_config = config_file
-
-    assert any(
-        (models.env.distribution_id, models.env.distribution_config)
-    ), "\n\tAny one of 'distribution_id' or 'distribution_config' is required"

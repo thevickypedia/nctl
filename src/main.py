@@ -2,24 +2,20 @@ import multiprocessing
 import os
 import subprocess
 
-from src import cloudfront, logger, models, squire
+from src import cloudfront, models, squire
+from src.logger import LOGGER
 
-LOGGER = logger.build_logger()
 
-
-def distribution_handler(public_url: str) -> None:
+# Have this as a dedicated function to avoid pickling error
+def distribution_handler(public_url: str, env_dump: dict) -> None:
     """Updates the cloudfront distribution in a dedicated process.
 
     Args:
         public_url: Public URL from ngrok, that has to be updated.
+        env_dump: env_dump: JSON dump of environment variables' configuration.
     """
-    cloud_front = cloudfront.CloudFront(env_dump=models.env.model_dump())
-    if models.env.distribution_id:
-        cloud_front.update_distribution(origin_name=public_url.lstrip("https://"))
-    else:
-        # fixme: Untested code
-        # todo: Need to nest into the config file to update the public_url
-        cloud_front.create_distribution()
+    cloud_front = cloudfront.CloudFront(env_dump)
+    cloud_front.run(public_url)
 
 
 def writer(frame: str) -> None:
@@ -51,7 +47,7 @@ def writer(frame: str) -> None:
             public_url,
         )
         process = multiprocessing.Process(
-            target=distribution_handler, args=(public_url,)
+            target=distribution_handler, args=(public_url, models.env.model_dump())
         )
         process.name = "distribution-handler"
         process.start()
@@ -67,7 +63,7 @@ def tunnel(**kwargs) -> None:
         models.env = squire.env_loader(".env")
     else:
         models.env = models.EnvConfig(**kwargs)
-    squire.validate_env()
+    squire.run_validations()
 
     # https://ngrok.com/docs/agent/config/
     command = f'ngrok http {models.env.port} --log "stdout"'

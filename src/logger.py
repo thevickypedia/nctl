@@ -34,6 +34,8 @@ def build_logger() -> logging.Logger:
         logging.Logger:
         Returns a reference to the logger object.
     """
+    # todo: add file logger functionality [OR]
+    #  support logging.conf and logging.ini file support
     importlib.reload(logging)
     logger = logging.getLogger(__name__)
     default_formatter = logging.Formatter(
@@ -46,3 +48,6 @@ def build_logger() -> logging.Logger:
     logger.addFilter(filter=AddProcessName(process_name=pname))
     logger.setLevel(logging.INFO)
     return logger
+
+
+LOGGER = build_logger()

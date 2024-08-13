@@ -1,5 +1,6 @@
 import itertools
 import json
+import logging
 import os
 import time
 from datetime import datetime
@@ -8,9 +9,8 @@ import boto3
 import yaml
 from botocore.exceptions import ClientError
 
-from src import logger, models
-
-LOGGER = logger.build_logger()
+from src import models
+from src.logger import LOGGER
 
 
 class CloudFront:
@@ -21,9 +21,33 @@ class CloudFront:
     """
 
     def __init__(self, env_dump: dict):
-        """Initiates the boto3 client and re-configures the environment variables."""
+        """Initiates the boto3 client and re-configures the environment variables.
+
+        Args:
+            env_dump: JSON dump of environment variables' configuration.
+        """
         self.client = boto3.client("cloudfront")
         self.env = models.EnvConfig(**env_dump)
+        if self.env.debug:
+            LOGGER.setLevel(logging.DEBUG)
+
+    def run(self, public_url: str) -> None:
+        """Updates the distribution if ID is available, otherwise creates a new distribution.
+
+        Args:
+            public_url: Public URL from ngrok, that has to be updated.
+        """
+        if self.env.distribution_id:
+            LOGGER.info("Updating existing distribution: %s", self.env.distribution_id)
+            self.update_distribution(origin_name=public_url.lstrip("https://"))
+        else:
+            # fixme: Untested code
+            # todo: Need to nest into the config file to update the public_url
+            LOGGER.info(
+                "Creating new distribution with config: %s",
+                self.env.distribution_config,
+            )
+            self.create_distribution()
 
     def get_distribution(self) -> dict:
         """Get cloudfront distribution.
@@ -36,13 +60,12 @@ class CloudFront:
 
     def create_distribution(self) -> None:
         """Creates a cloudfront distribution from a JSON or YAML file as config."""
-        filename = str(self.env.distribution_config)
-        flower = filename.lower()
-        if flower.endswith(".yaml") or flower.endswith(".yml"):
-            with open(filename) as file:
+        sfx = self.env.distribution_config.suffix.lower()
+        if sfx in (".yml", ".yaml"):
+            with open(self.env.distribution_config) as file:
                 config = yaml.load(file, Loader=yaml.FullLoader)
-        if flower.endswith(".json"):
-            with open(filename) as file:
+        if sfx == ".json":
+            with open(self.env.distribution_config) as file:
                 config = json.load(file)
         create_response = self.client.create_distribution(DistributionConfig=config)
         if create_response.get("ResponseMetadata", {}).get("HTTPStatusCode", 0) == 200:
