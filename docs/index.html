@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Welcome to NCTL’s documentation! &#8212; NCTL  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/static.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="NCTL" href="README.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="README.html" title="NCTL"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">NCTL  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to NCTL’s documentation!</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="welcome-to-nctl-s-documentation">
+<h1>Welcome to NCTL’s documentation!<a class="headerlink" href="#welcome-to-nctl-s-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">NCTL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#kick-off">Kick off</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#coding-standards">Coding Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#release-notes">Release Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#linting">Linting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#pypi-package">Pypi Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#runbook">Runbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#license-copyright">License &amp; copyright</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-nctl.main">
+<span id="nctl-main"></span><h1>NCTL - Main<a class="headerlink" href="#module-nctl.main" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="nctl.main.distribution_handler">
+<span class="sig-prename descclassname"><span class="pre">nctl.main.</span></span><span class="sig-name descname"><span class="pre">distribution_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">public_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_dump</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.main.distribution_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the cloudfront distribution in a dedicated process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>public_url</strong> – Public URL from ngrok, that has to be updated.</p></li>
+<li><p><strong>env_dump</strong> – env_dump: JSON dump of environment variables’ configuration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nctl.main.writer">
+<span class="sig-prename descclassname"><span class="pre">nctl.main.</span></span><span class="sig-name descname"><span class="pre">writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.main.writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the message part from each line into a custom message format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Each line of log message from ngrok.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nctl.main.tunnel">
+<span class="sig-prename descclassname"><span class="pre">nctl.main.</span></span><span class="sig-name descname"><span class="pre">tunnel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.main.tunnel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates a ngrok tunnel using the CLI and updates cloudfront distribution.</p>
+</dd></dl>
+
+</section>
+<section id="module-nctl.cloudfront">
+<span id="cloudfront"></span><h1>CloudFront<a class="headerlink" href="#module-nctl.cloudfront" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="nctl.cloudfront.CloudFront">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nctl.cloudfront.</span></span><span class="sig-name descname"><span class="pre">CloudFront</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_dump</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nctl.cloudfront.CloudFront" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates CloudFront object to get and update a cloudfront distribution.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CloudFront</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="nctl.cloudfront.CloudFront.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">public_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.cloudfront.CloudFront.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the distribution if ID is available, otherwise creates a new distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>public_url</strong> – Public URL from ngrok, that has to be updated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nctl.cloudfront.CloudFront.get_distribution">
+<span class="sig-name descname"><span class="pre">get_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#nctl.cloudfront.CloudFront.get_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get cloudfront distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Distribution information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nctl.cloudfront.CloudFront.create_distribution">
+<span class="sig-name descname"><span class="pre">create_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.cloudfront.CloudFront.create_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a cloudfront distribution from a JSON or YAML file as config.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nctl.cloudfront.CloudFront.update_distribution">
+<span class="sig-name descname"><span class="pre">update_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.cloudfront.CloudFront.update_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a cloudfront distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>origin_name</strong> – Origin name that has to be replaced with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-nctl.logger">
+<span id="logger"></span><h1>Logger<a class="headerlink" href="#module-nctl.logger" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="nctl.logger.AddProcessName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nctl.logger.</span></span><span class="sig-name descname"><span class="pre">AddProcessName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nctl.logger.AddProcessName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper that overrides <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code> to add <code class="docutils literal notranslate"><span class="pre">processName</span></code> to the existing log format.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AddProcessName</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>process_name</strong> – Takes name of the process to be added as argument.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="nctl.logger.AddProcessName.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#nctl.logger.AddProcessName.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the built-in filter record.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nctl.logger.build_logger">
+<span class="sig-prename descclassname"><span class="pre">nctl.logger.</span></span><span class="sig-name descname"><span class="pre">build_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Logger</span></span></span><a class="headerlink" href="#nctl.logger.build_logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a custom logger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a reference to the logger object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>logging.Logger</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="models">
+<h1>Models<a class="headerlink" href="#models" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="nctl.models.Concurrency">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nctl.models.</span></span><span class="sig-name descname"><span class="pre">Concurrency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nctl.models.Concurrency" title="Permalink to this definition">¶</a></dt>
+<dd><p>BaseModel to load the multiprocessing object reference.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Concurrency</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nctl.models.Concurrency.cloudfront_process">
+<span class="sig-name descname"><span class="pre">cloudfront_process</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">multiprocessing.context.Process</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#nctl.models.Concurrency.cloudfront_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nctl.models.Concurrency.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#nctl.models.Concurrency.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Config to allow arbitrary types.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nctl.models.Concurrency.Config.arbitrary_types_allowed">
+<span class="sig-name descname"><span class="pre">arbitrary_types_allowed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#nctl.models.Concurrency.Config.arbitrary_types_allowed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="module-nctl.squire">
+<span id="squire"></span><h1>Squire<a class="headerlink" href="#module-nctl.squire" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="nctl.squire.create_ngrok_config">
+<span class="sig-prename descclassname"><span class="pre">nctl.squire.</span></span><span class="sig-name descname"><span class="pre">create_ngrok_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.squire.create_ngrok_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a config file for ngrok.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> – Ngrok auth token.</p></li>
+<li><p><strong>filename</strong> – Filename to dump the config.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nctl.squire.env_loader">
+<span class="sig-prename descclassname"><span class="pre">nctl.squire.</span></span><span class="sig-name descname"><span class="pre">env_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">os.PathLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">EnvConfig</span></span></span><a class="headerlink" href="#nctl.squire.env_loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads environment variables based on filetypes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Filename from where env vars have to be loaded.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a reference to the <code class="docutils literal notranslate"><span class="pre">EnvConfig</span></code> object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>EnvConfig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nctl.squire.run_validations">
+<span class="sig-prename descclassname"><span class="pre">nctl.squire.</span></span><span class="sig-name descname"><span class="pre">run_validations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#nctl.squire.run_validations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the loaded environment variables and checks ngrok CLI availability.</p>
+</dd></dl>
+
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Welcome to NCTL’s documentation!</a></li>
+<li><a class="reference internal" href="#module-nctl.main">NCTL - Main</a></li>
+<li><a class="reference internal" href="#module-nctl.cloudfront">CloudFront</a></li>
+<li><a class="reference internal" href="#module-nctl.logger">Logger</a></li>
+<li><a class="reference internal" href="#models">Models</a></li>
+<li><a class="reference internal" href="#module-nctl.squire">Squire</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="README.html"
+                          title="next chapter">NCTL</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="README.html" title="NCTL"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">NCTL  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to NCTL’s documentation!</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2024, Vignesh Rao.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    </div>
+  </body>
+</html>

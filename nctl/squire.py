@@ -51,7 +51,12 @@ def env_loader(filename: str | os.PathLike) -> models.EnvConfig:
 
 
 def run_validations() -> None:
-    """Validates the loaded environment variables and checks ngrok CLI availability."""
+    """Validates the loaded environment variables and checks ngrok CLI availability.
+
+    Raises:
+        AssertionError:
+        If any of the validations fail.
+    """
     assert shutil.which(
         cmd="ngrok"
     ), "\n\tTo proceed, please install ngrok CLI using https://dashboard.ngrok.com/get-started/setup"
