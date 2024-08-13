@@ -5,8 +5,8 @@ import shutil
 
 import yaml
 
-from src import models
-from src.logger import LOGGER
+from nctl import models
+from nctl.logger import LOGGER
 
 
 def create_ngrok_config(token: str, filename: str) -> None:

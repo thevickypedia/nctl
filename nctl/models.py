@@ -30,6 +30,7 @@ class EnvConfig(BaseSettings):
 
     port: PositiveInt
     host: str = socket.gethostbyname("localhost") or "0.0.0.0"
+    aws_profile_name: str | None = None
     aws_access_key_id: str | None = None
     aws_secret_access_key: str | None = None
     aws_default_region: str | None = None

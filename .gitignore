@@ -6,7 +6,7 @@ venv/
 __pycache__/
 
 build/
-PyNinja.egg-info/
+nctl.egg-info/
 
 doc_gen/_*
 

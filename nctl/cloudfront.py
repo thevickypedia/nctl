@@ -9,8 +9,8 @@ import boto3
 import yaml
 from botocore.exceptions import ClientError
 
-from src import models
-from src.logger import LOGGER
+from nctl import models
+from nctl.logger import LOGGER
 
 
 class CloudFront:
@@ -26,10 +26,16 @@ class CloudFront:
         Args:
             env_dump: JSON dump of environment variables' configuration.
         """
-        self.client = boto3.client("cloudfront")
         self.env = models.EnvConfig(**env_dump)
         if self.env.debug:
             LOGGER.setLevel(logging.DEBUG)
+        session = boto3.Session(
+            aws_access_key_id=self.env.aws_access_key_id,
+            aws_secret_access_key=self.env.aws_secret_access_key,
+            region_name=self.env.aws_region_name,
+            profile_name=self.env.aws_profile_name,
+        )
+        self.client = session.client("cloudfront")
 
     def run(self, public_url: str) -> None:
         """Updates the distribution if ID is available, otherwise creates a new distribution.

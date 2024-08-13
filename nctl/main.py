@@ -2,8 +2,8 @@ import multiprocessing
 import os
 import subprocess
 
-from src import cloudfront, models, squire
-from src.logger import LOGGER
+from nctl import cloudfront, models, squire
+from nctl.logger import LOGGER
 
 
 # Have this as a dedicated function to avoid pickling error
