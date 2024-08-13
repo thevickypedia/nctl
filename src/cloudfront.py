@@ -1,6 +1,8 @@
 import itertools
 import json
+import os
 import time
+from datetime import datetime
 
 import boto3
 import yaml
@@ -34,26 +36,19 @@ class CloudFront:
 
     def create_distribution(self) -> None:
         """Creates a cloudfront distribution from a JSON or YAML file as config."""
-        flower = self.env.distribution_config.lower()
-        assert (
-            flower.endswith(".yaml")
-            or flower.endswith(".yml")
-            or flower.endswith(".json")
-        ), "Config file can only be JSON or YAML"
+        filename = str(self.env.distribution_config)
+        flower = filename.lower()
         if flower.endswith(".yaml") or flower.endswith(".yml"):
-            with open(self.env.distribution_config) as file:
+            with open(filename) as file:
                 config = yaml.load(file, Loader=yaml.FullLoader)
         if flower.endswith(".json"):
-            with open(self.env.distribution_config) as file:
+            with open(filename) as file:
                 config = json.load(file)
         create_response = self.client.create_distribution(DistributionConfig=config)
-        if (
-            create_response.get("ResponseMetadata", {}).get("HTTPStatusCode", 500)
-            == 200
-        ):
+        if create_response.get("ResponseMetadata", {}).get("HTTPStatusCode", 0) == 200:
             LOGGER.info(
-                "CloudFront distribution has been created. "
-                f"Deployment status: {create_response['Distribution']['Status']}"
+                "CloudFront distribution has been created. Deployment status: %s",
+                create_response["Distribution"]["Status"],
             )
         else:
             raise ClientError(
@@ -77,7 +72,7 @@ class CloudFront:
             distribution_config.get("Origins").get("Items", [])
         ):
             if domain_name := item.get("DomainName"):
-                LOGGER.info(f"DomainName::{domain_name} -> {origin_name}")
+                LOGGER.info("DomainName::%s -> %s", domain_name, origin_name)
                 distribution_config["Origins"]["Items"][index][
                     "DomainName"
                 ] = origin_name
@@ -110,10 +105,7 @@ class CloudFront:
             Id=self.env.distribution_id,
             IfMatch=etag,
         )
-        if (
-            update_response.get("ResponseMetadata", {}).get("HTTPStatusCode", 500)
-            == 200
-        ):
+        if update_response.get("ResponseMetadata", {}).get("HTTPStatusCode", 0) == 200:
             LOGGER.info(
                 "CloudFront distribution has been updated. "
                 f"Deployment status: {update_response['Distribution']['Status']}"
@@ -125,13 +117,18 @@ class CloudFront:
             )
 
         try:
+            configdir = "cloudfront_config"
+            os.makedirs(configdir, exist_ok=True)
+            configfile = os.path.join(
+                configdir, datetime.now().strftime("config_%m%d%y.yaml")
+            )
             for i in itertools.count():
                 if not i:
                     time.sleep(300)
                 else:
                     time.sleep(10)
                 response = self.get_distribution()
-                with open(self.env.configfile, "w") as file:
+                with open(configfile, "w") as file:
                     yaml.dump(
                         stream=file,
                         data=response,
@@ -139,10 +136,7 @@ class CloudFront:
                         sort_keys=False,
                         default_flow_style=False,
                     )
-                if (
-                    response.get("Distribution", {}).get("Status", "Not Deployed")
-                    == "Deployed"
-                ):
+                if response.get("Distribution", {}).get("Status", "NA") == "Deployed":
                     LOGGER.info("CloudFront distribution has been deployed")
                     break
                 if i > 5:

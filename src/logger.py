@@ -44,4 +44,5 @@ def build_logger() -> logging.Logger:
     handler.setFormatter(default_formatter)
     logger.addHandler(handler)
     logger.addFilter(filter=AddProcessName(process_name=pname))
+    logger.setLevel(logging.INFO)
     return logger

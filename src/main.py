@@ -1,42 +1,25 @@
+import multiprocessing
 import os
 import subprocess
-from multiprocessing import Process
 
 from src import cloudfront, logger, models, squire
 
 LOGGER = logger.build_logger()
 
 
-def update_cloudfront_distribution(public_url: str) -> Process:
+def distribution_handler(public_url: str) -> None:
     """Updates the cloudfront distribution in a dedicated process.
 
     Args:
         public_url: Public URL from ngrok, that has to be updated.
-
-    Returns:
-        Process:
-        Returns a reference to the ``multiprocessing.Process`` object.
     """
     cloud_front = cloudfront.CloudFront(env_dump=models.env.model_dump())
     if models.env.distribution_id:
-        process = Process(
-            target=cloud_front.update_distribution,
-            kwargs={"origin_name": public_url.lstrip("https://")},
-        )
-        process.name = "CloudfrontUpdate"
+        cloud_front.update_distribution(origin_name=public_url.lstrip("https://"))
     else:
         # fixme: Untested code
         # todo: Need to nest into the config file to update the public_url
-        process = Process(target=cloud_front.create_distribution)
-        process.name = "CloudfrontCreate"
-    process.start()
-    LOGGER.info(
-        "Tunneling http://%s:%s through the public URL: %s",
-        models.env.host,
-        models.env.port,
-        public_url,
-    )
-    return process
+        cloud_front.create_distribution()
 
 
 def writer(frame: str) -> None:
@@ -61,9 +44,18 @@ def writer(frame: str) -> None:
     msg = frame.split("msg=")[-1].replace('"', "").replace("'", "")
     if "url=" in msg and not models.concurrency.cloudfront_process:
         public_url = msg.split("url=")[-1].strip()
-        models.concurrency.cloudfront_process = update_cloudfront_distribution(
-            public_url
+        LOGGER.info(
+            "Tunneling http://%s:%s through the public URL: %s",
+            models.env.host,
+            models.env.port,
+            public_url,
         )
+        process = multiprocessing.Process(
+            target=distribution_handler, args=(public_url,)
+        )
+        process.name = "distribution-handler"
+        process.start()
+        models.concurrency.cloudfront_process = process
     log(msg)
 
 

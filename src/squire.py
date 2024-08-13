@@ -59,9 +59,13 @@ def validate_env() -> None:
     """Validates the loaded environment variables."""
     if models.env.debug:
         LOGGER.setLevel(logging.DEBUG)
-    else:
-        LOGGER.setLevel(logging.INFO)
-
+    if models.env.distribution_config:
+        flower = str(models.env.distribution_config).lower()
+        assert (
+            flower.endswith(".yaml")
+            or flower.endswith(".yml")
+            or flower.endswith(".json")
+        ), "Config file can only be JSON or YAML"
     if models.env.ngrok_config:
         LOGGER.info("Using ngrok config file: %s", models.env.ngrok_config)
     elif models.env.ngrok_auth:
