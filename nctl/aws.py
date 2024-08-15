@@ -47,10 +47,10 @@ class CloudFront:
         if self.env.distribution_id:
             LOGGER.info("Updating existing distribution: %s", self.env.distribution_id)
         else:
-            # fixme: Untested code
-            # todo: Need to nest into the config file to update the public_url
+            # First create a skeleton distribution using the provided config file
+            # Then pull what's on AWS CloudFront to update distribution to retain consistency
             LOGGER.info(
-                "Creating new distribution with config: %s",
+                "Creating new distribution with config file: %s",
                 self.env.distribution_config,
             )
             self.create_distribution()
@@ -82,6 +82,8 @@ class CloudFront:
                 "CloudFront distribution has been created. Deployment status: %s",
                 create_response["Distribution"]["Status"],
             )
+            self.env.distribution_id = create_response["Distribution"]["Id"]
+            LOGGER.info("Distribution Id: %s", self.env.distribution_id)
         else:
             raise ClientError(
                 operation_name="CreateDistribution",
@@ -89,12 +91,11 @@ class CloudFront:
             )
 
     def update_distribution(self, current_config: dict, origin_name: str) -> None:
-        """Updates a cloudfront distribution.
+        """Updates the origin host of a cloudfront distribution.
 
         Args:
             origin_name: Origin name that has to be replaced with.
         """
-        self.store_config(current_config)  # todo: remove this after testing
         etag = current_config["ETag"]
         distribution_config = current_config.get("Distribution", {}).get(
             "DistributionConfig", {}
@@ -103,14 +104,16 @@ class CloudFront:
         for index, item in enumerate(
             distribution_config.get("Origins").get("Items", [])
         ):
+            # Distribution -> DistributionConfig -> Origins -> Items -> DomainName
             if domain_name := item.get("DomainName"):
                 LOGGER.info("DomainName::%s -> %s", domain_name, origin_name)
                 distribution_config["Origins"]["Items"][index][
                     "DomainName"
                 ] = origin_name
                 item1 = True
+            # Distribution -> DistributionConfig -> Origins -> Items -> Id
             if item_id := item.get("Id"):
-                LOGGER.info(f"Id::{item_id} -> {origin_name}")
+                LOGGER.info("CHANGES: Id::%s -> %s", item_id, origin_name)
                 distribution_config["Origins"]["Items"][index]["Id"] = origin_name
                 item2 = True
         if not all((item1, item2)):
@@ -120,10 +123,11 @@ class CloudFront:
                 error_response="Missing key(s) `DomainName` or `Id`",
             )
 
+        # Distribution -> DistributionConfig -> DefaultCacheBehavior -> TargetOriginId
         if origin_id := distribution_config.get("DefaultCacheBehavior", {}).get(
             "TargetOriginId"
         ):
-            LOGGER.info(f"TargetOriginId::{origin_id} -> {origin_name}")
+            LOGGER.info("CHANGES: TargetOriginId::%s -> %s", origin_id, origin_name)
             distribution_config["DefaultCacheBehavior"]["TargetOriginId"] = origin_name
         else:
             LOGGER.error(distribution_config)
@@ -139,14 +143,32 @@ class CloudFront:
         )
         if update_response.get("ResponseMetadata", {}).get("HTTPStatusCode", 0) == 200:
             LOGGER.info(
-                "CloudFront distribution has been updated. "
-                f"Deployment status: {update_response['Distribution']['Status']}"
+                "CloudFront distribution has been updated. Deployment status: %s",
+                update_response["Distribution"]["Status"],
             )
+            self.await_deploy()
         else:
             raise ClientError(
                 operation_name="UpdateDistribution",
                 error_response=update_response.get("ResponseMetadata"),
             )
+
+    def await_deploy(self) -> None:
+        """Waits for the distribution to be deployed."""
+        try:
+            LOGGER.info("Waiting for CloudFront distribution to enter 'Deployed' state")
+            waiter = self.client.get_waiter("distribution_deployed")
+            waiter.wait(
+                Id=self.env.distribution_id,
+                WaiterConfig={"Delay": 120, "MaxAttempts": 5},
+            )
+            LOGGER.info("CloudFront distribution has been deployed")
+        except WaiterError as error:
+            LOGGER.error("Error while waiting for distribution to deploy: %s", error)
+        except KeyboardInterrupt:
+            LOGGER.warning("Cloudfront status check suspended")
+        finally:
+            self.store_config()
 
     def store_config(self, configuration: dict = None) -> None:
         """Stores the cloudfront distribution config in a YAML file locally."""
@@ -164,19 +186,3 @@ class CloudFront:
                 default_flow_style=False,
             )
             file.flush()
-
-    def await_update(self, distribution_id: str) -> None:
-        """Awaits the distribution update."""
-        try:
-            LOGGER.info("Waiting for CloudFront distribution to enter 'Deployed' state")
-            waiter = self.cloudfront_client.get_waiter("distribution_deployed")
-            waiter.wait(
-                Id=distribution_id, WaiterConfig={"Delay": 120, "MaxAttempts": 5}
-            )
-            LOGGER.info("CloudFront distribution has been deployed")
-        except WaiterError as error:
-            LOGGER.error(f"Error while waiting for distribution to deploy: {error}")
-        except KeyboardInterrupt:
-            LOGGER.warning("Cloudfront status check suspended")
-        finally:
-            self.store_config()
