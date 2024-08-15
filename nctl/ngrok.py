@@ -1,9 +1,11 @@
+import logging
 import multiprocessing
 import os
 import subprocess
 
-from nctl import cloudfront, models, squire
-from nctl.logger import LOGGER
+from nctl import aws, logger, models, squire
+
+LOGGER = logging.getLogger("nctl.tunnel")
 
 
 # Have this as a dedicated function to avoid pickling error
@@ -14,7 +16,7 @@ def distribution_handler(public_url: str, env_dump: dict) -> None:
         public_url: Public URL from ngrok, that has to be updated.
         env_dump: env_dump: JSON dump of environment variables' configuration.
     """
-    cloud_front = cloudfront.CloudFront(env_dump)
+    cloud_front = aws.CloudFront(env_dump)
     cloud_front.run(public_url)
 
 
@@ -63,6 +65,9 @@ def tunnel(**kwargs) -> None:
         models.env = squire.env_loader(".env")
     else:
         models.env = models.EnvConfig(**kwargs)
+    logger.configure_logging(
+        debug=models.env.debug, log_config=models.env.log_config, process="tunnel"
+    )
     squire.run_validations()
 
     # https://ngrok.com/docs/agent/config/

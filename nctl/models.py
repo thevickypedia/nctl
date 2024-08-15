@@ -39,6 +39,7 @@ class EnvConfig(BaseSettings):
     distribution_id: str | None = None
     distribution_config: FilePath | None = None
     debug: bool = False
+    log_config: dict | None = None
 
     @classmethod
     def from_env_file(cls, env_file: pathlib.Path) -> "EnvConfig":

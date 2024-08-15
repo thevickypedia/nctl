@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import pathlib
 import shutil
@@ -6,7 +7,8 @@ import shutil
 import yaml
 
 from nctl import models
-from nctl.logger import LOGGER
+
+LOGGER = logging.getLogger("nctl.tunnel")
 
 
 def create_ngrok_config(token: str, filename: str) -> None:

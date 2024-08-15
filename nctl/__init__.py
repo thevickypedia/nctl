@@ -4,7 +4,7 @@ import sys
 
 import click
 
-from nctl.main import tunnel  # noqa: F401
+from nctl.ngrok import tunnel  # noqa: F401
 
 version = "0.0.0-a"
 
