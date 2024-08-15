@@ -14,7 +14,7 @@ def distribution_handler(public_url: str, env_dump: dict) -> None:
 
     Args:
         public_url: Public URL from ngrok, that has to be updated.
-        env_dump: env_dump: JSON dump of environment variables' configuration.
+        env_dump: JSON dump of environment variables' configuration.
     """
     cloud_front = aws.CloudFront(env_dump)
     cloud_front.run(public_url)

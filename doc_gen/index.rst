@@ -12,34 +12,39 @@ Welcome to NCTL's documentation!
 
    README
 
-NCTL - Main
-===========
+Ngrok Tunnel
+============
 
-.. automodule:: nctl.main
+.. automodule:: nctl.ngrok
 
-CloudFront
-==========
-.. automodule:: nctl.cloudfront
+AWS CloudFront
+==============
+
+.. automodule:: nctl.aws
 
 Logger
 ======
 
+.. autoclass:: nctl.logger.LogConfig(pydantic.BaseModel)
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
 .. automodule:: nctl.logger
+   :exclude-members: LogConfig
 
 Models
 ======
 
-.. autoclass:: nctl.models.Concurrency(BaseModel)
+.. autoclass:: nctl.models.Concurrency(pydantic.BaseModel)
    :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
 
 ====
 
-.. autoclass:: pyninja.models.EnvConfig(BaseModel)
+.. autoclass:: nctl.models.EnvConfig(pydantic.BaseSettings)
    :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
 
 ====
 
-.. automodule:: pyninja.models
+.. automodule:: nctl.models
    :exclude-members: Concurrency, EnvConfig, concurrency, env
 
 Squire
