@@ -17,6 +17,6 @@ logging.ini
 *.db
 
 !samples/*
-ngrok.yml
-cloudfront_*.yaml
+*.yaml
+*.yml
 !.github/*

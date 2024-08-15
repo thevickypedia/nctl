@@ -1,13 +1,11 @@
-import itertools
 import json
 import logging
 import os
-import time
 from datetime import datetime
 
 import boto3
 import yaml
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, WaiterError
 
 from nctl import logger, models
 
@@ -45,9 +43,9 @@ class CloudFront:
         Args:
             public_url: Public URL from ngrok, that has to be updated.
         """
+        origin = public_url.lstrip("https://")
         if self.env.distribution_id:
             LOGGER.info("Updating existing distribution: %s", self.env.distribution_id)
-            self.update_distribution(origin_name=public_url.lstrip("https://"))
         else:
             # fixme: Untested code
             # todo: Need to nest into the config file to update the public_url
@@ -56,6 +54,9 @@ class CloudFront:
                 self.env.distribution_config,
             )
             self.create_distribution()
+        self.update_distribution(
+            current_config=self.get_distribution(), origin_name=origin
+        )
 
     def get_distribution(self) -> dict:
         """Get cloudfront distribution.
@@ -87,15 +88,15 @@ class CloudFront:
                 error_response=create_response.get("ResponseMetadata"),
             )
 
-    def update_distribution(self, origin_name: str) -> None:
+    def update_distribution(self, current_config: dict, origin_name: str) -> None:
         """Updates a cloudfront distribution.
 
         Args:
             origin_name: Origin name that has to be replaced with.
         """
-        get_response = self.get_distribution()
-        etag = get_response["ETag"]
-        distribution_config = get_response.get("Distribution", {}).get(
+        self.store_config(current_config)  # todo: remove this after testing
+        etag = current_config["ETag"]
+        distribution_config = current_config.get("Distribution", {}).get(
             "DistributionConfig", {}
         )
         item1, item2 = False, False
@@ -147,33 +148,35 @@ class CloudFront:
                 error_response=update_response.get("ResponseMetadata"),
             )
 
-        try:
-            configdir = "cloudfront_config"
-            os.makedirs(configdir, exist_ok=True)
-            configfile = os.path.join(
-                configdir, datetime.now().strftime("config_%m%d%y.yaml")
+    def store_config(self, configuration: dict = None) -> None:
+        """Stores the cloudfront distribution config in a YAML file locally."""
+        configdir = "cloudfront_config"
+        os.makedirs(configdir, exist_ok=True)
+        configfile = os.path.join(
+            configdir, datetime.now().strftime("config_%m%d%y.yaml")
+        )
+        with open(configfile, "w") as file:
+            yaml.dump(
+                stream=file,
+                data=configuration or self.get_distribution(),
+                Dumper=yaml.SafeDumper,
+                sort_keys=False,
+                default_flow_style=False,
             )
-            for i in itertools.count():
-                if not i:
-                    time.sleep(300)
-                else:
-                    time.sleep(10)
-                response = self.get_distribution()
-                with open(configfile, "w") as file:
-                    yaml.dump(
-                        stream=file,
-                        data=response,
-                        Dumper=yaml.SafeDumper,
-                        sort_keys=False,
-                        default_flow_style=False,
-                    )
-                if response.get("Distribution", {}).get("Status", "NA") == "Deployed":
-                    LOGGER.info("CloudFront distribution has been deployed")
-                    break
-                if i > 5:
-                    LOGGER.warning(
-                        "CloudFront distribution is taking longer than usual to propagate."
-                    )
-                    return
+            file.flush()
+
+    def await_update(self, distribution_id: str) -> None:
+        """Awaits the distribution update."""
+        try:
+            LOGGER.info("Waiting for CloudFront distribution to enter 'Deployed' state")
+            waiter = self.cloudfront_client.get_waiter("distribution_deployed")
+            waiter.wait(
+                Id=distribution_id, WaiterConfig={"Delay": 120, "MaxAttempts": 5}
+            )
+            LOGGER.info("CloudFront distribution has been deployed")
+        except WaiterError as error:
+            LOGGER.error(f"Error while waiting for distribution to deploy: {error}")
         except KeyboardInterrupt:
             LOGGER.warning("Cloudfront status check suspended")
+        finally:
+            self.store_config()
