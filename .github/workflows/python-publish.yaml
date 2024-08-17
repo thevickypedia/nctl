@@ -12,6 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
+        type: choice
         description: Dry run mode
         required: true
         options:
@@ -35,7 +36,6 @@ jobs:
             echo "dry_run=false" >> $GITHUB_ENV
           fi
       - uses: thevickypedia/pypi-publisher@v3
-        env:
-          token: ${{ secrets.PYPI_TOKEN }}
         with:
+          token: ${{ secrets.PYPI_TOKEN }}
           dry-run: ${{ env.dry_run }}

@@ -66,7 +66,10 @@ def tunnel(**kwargs) -> None:
     else:
         models.env = models.EnvConfig(**kwargs)
     logger.configure_logging(
-        debug=models.env.debug, log_config=models.env.log_config, process="tunnel"
+        debug=models.env.debug,
+        log_config=models.env.log_config,
+        process="tunnel",
+        log=models.env.log,
     )
     squire.run_validations()
 

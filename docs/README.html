@@ -92,22 +92,22 @@ Refer [samples] directory for examples.</p>
 </div></blockquote>
 </details><ul class="simple">
 <li><p><strong>PORT</strong> - Port number to expose using ngrok.</p></li>
-<li><p><strong>HOST</strong> - Hostname of the server that has to be exposed.</p></li>
+<li><p><strong>HOST</strong> - Hostname of the server that has to be exposed.
+<br><br></p></li>
 <li><p><strong>NGROK_AUTH</strong> - Auth token for ngrok.</p></li>
-<li><p><strong>NGROK_CONFIG</strong> - Ngrok configuration filepath. Auto-created when auth token is specified.</p></li>
-<li><p><strong>DISTRIBUTION_ID</strong> - Cloudfront distribution ID. Required to update an existing distribution.</p></li>
-<li><p><strong>DISTRIBUTION_CONFIG</strong> - Cloudfront distribution config filepath. Required to create a new distribution.</p></li>
-<li><p><strong>DEBUG</strong> - Boolean flag to enable debug level logging.</p></li>
-</ul>
-<section id="aws-config">
-<h3>AWS Config<a class="headerlink" href="#aws-config" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
+<li><p><strong>NGROK_CONFIG</strong> - Ngrok configuration filepath. Auto-created when auth token is specified.
+<br><br></p></li>
 <li><p><strong>AWS_PROFILE_NAME</strong> - AWS profile name.</p></li>
 <li><p><strong>AWS_ACCESS_KEY_ID</strong> - AWS access key ID.</p></li>
 <li><p><strong>AWS_SECRET_ACCESS_KEY</strong> - AWS secret key.</p></li>
 <li><p><strong>AWS_REGION_NAME</strong> - AWS region name.</p></li>
+<li><p><strong>DISTRIBUTION_ID</strong> - Cloudfront distribution ID. Required to update an existing distribution.</p></li>
+<li><p><strong>DISTRIBUTION_CONFIG</strong> - Cloudfront distribution config filepath. Required to create a new distribution.
+<br><br></p></li>
+<li><p><strong>DEBUG</strong> - Boolean flag to enable debug level logging.</p></li>
+<li><p><strong>LOG</strong> - Simple option to switch between <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">file</span></code> logging.</p></li>
+<li><p><strong>LOG_CONFIG</strong> - Custom logging configuration. Accepts <code class="docutils literal notranslate"><span class="pre">.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">.json</span></code> and <code class="docutils literal notranslate"><span class="pre">.ini</span></code> filetypes.</p></li>
 </ul>
-</section>
 </section>
 <section id="coding-standards">
 <h2>Coding Standards<a class="headerlink" href="#coding-standards" title="Permalink to this heading">¶</a></h2>
@@ -167,10 +167,7 @@ markdown files (including Wiki pages)</p>
     <ul>
 <li><a class="reference internal" href="#">NCTL</a><ul>
 <li><a class="reference internal" href="#kick-off">Kick off</a></li>
-<li><a class="reference internal" href="#environment-variables">Environment Variables</a><ul>
-<li><a class="reference internal" href="#aws-config">AWS Config</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
 <li><a class="reference internal" href="#coding-standards">Coding Standards</a></li>
 <li><a class="reference internal" href="#release-notes">Release Notes</a></li>
 <li><a class="reference internal" href="#linting">Linting</a></li>

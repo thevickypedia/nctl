@@ -1,8 +1,12 @@
 import json
 import logging
+import os
+from datetime import datetime
 
 import yaml
-from pydantic import BaseModel
+from pydantic import BaseModel, FilePath
+
+from nctl import models
 
 LOGGER = logging.getLogger("nctl.tunnel")
 
@@ -34,9 +38,10 @@ class LogConfig(BaseModel):
 
     """
 
-    debug: bool = False
+    debug: bool
+    log: models.LogOptions
     process: str | None = None
-    log_config: dict | str | None = None
+    log_config: dict | FilePath | None = None
 
     class Config:
         """Extra configuration for LogConfig object."""
@@ -82,7 +87,14 @@ def configure_logging(**kwargs) -> None:
             datefmt="%b-%d-%Y %I:%M:%S %p",
             fmt="%(asctime)s - %(levelname)s - [%(module)s:%(processName)s:%(lineno)d] - %(funcName)s - %(message)s",
         )
-        handler = logging.StreamHandler()
+        if models.env.log == models.LogOptions.stdout:
+            handler = logging.StreamHandler()
+        else:
+            logfile: str = datetime.now().strftime(
+                os.path.join("logs", "nctl_%d-%m-%Y.log")
+            )
+            os.makedirs("logs", exist_ok=True)
+            handler = logging.FileHandler(logfile)
         handler.setFormatter(default_formatter)
         logging.getLogger(f"nctl.{config.process}").addHandler(handler)
         logging.getLogger(f"nctl.{config.process}").addFilter(

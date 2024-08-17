@@ -57,18 +57,23 @@ nctl start
 
 - **PORT** - Port number to expose using ngrok.
 - **HOST** - Hostname of the server that has to be exposed.
+<br><br>
+
 - **NGROK_AUTH** - Auth token for ngrok.
 - **NGROK_CONFIG** - Ngrok configuration filepath. Auto-created when auth token is specified.
-- **DISTRIBUTION_ID** - Cloudfront distribution ID. Required to update an existing distribution.
-- **DISTRIBUTION_CONFIG** - Cloudfront distribution config filepath. Required to create a new distribution.
-- **DEBUG** - Boolean flag to enable debug level logging.
-
-#### AWS Config
+<br><br>
 
 - **AWS_PROFILE_NAME** - AWS profile name.
 - **AWS_ACCESS_KEY_ID** - AWS access key ID.
 - **AWS_SECRET_ACCESS_KEY** - AWS secret key.
 - **AWS_REGION_NAME** - AWS region name.
+- **DISTRIBUTION_ID** - Cloudfront distribution ID. Required to update an existing distribution.
+- **DISTRIBUTION_CONFIG** - Cloudfront distribution config filepath. Required to create a new distribution.
+<br><br>
+
+- **DEBUG** - Boolean flag to enable debug level logging.
+- **LOG** - Simple option to switch between `stdout` and `file` logging.
+- **LOG_CONFIG** - Custom logging configuration. Accepts `.yaml`, `.json` and `.ini` filetypes.
 
 ## Coding Standards
 Docstring format: [`Google`][google-docs] <br>

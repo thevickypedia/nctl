@@ -1,6 +1,7 @@
 import multiprocessing
 import pathlib
 import socket
+from enum import Enum
 
 from pydantic import BaseModel, FilePath, PositiveInt
 from pydantic_settings import BaseSettings
@@ -21,6 +22,17 @@ class Concurrency(BaseModel):
         arbitrary_types_allowed = True
 
 
+class LogOptions(Enum):
+    """Enum for log options.
+
+    >>> LogOptions
+
+    """
+
+    stdout: str = "stdout"
+    file: str = "file"
+
+
 class EnvConfig(BaseSettings):
     """Configuration settings for environment variables.
 
@@ -28,18 +40,27 @@ class EnvConfig(BaseSettings):
 
     """
 
+    # Tunnel config
     port: PositiveInt
     host: str = socket.gethostbyname("localhost") or "0.0.0.0"
+
+    # Ngrok config
+    ngrok_auth: str | None = None
+    ngrok_config: FilePath | None = None
+
+    # AWS config
     aws_profile_name: str | None = None
     aws_access_key_id: str | None = None
     aws_secret_access_key: str | None = None
     aws_default_region: str | None = None
-    ngrok_auth: str | None = None
-    ngrok_config: FilePath | None = None
     distribution_id: str | None = None
     distribution_config: FilePath | None = None
+    configdir: str = "cloudfront_config"
+
+    # Logging config
     debug: bool = False
-    log_config: dict | None = None
+    log: LogOptions = LogOptions.stdout
+    log_config: dict | FilePath | None = None
 
     @classmethod
     def from_env_file(cls, env_file: pathlib.Path) -> "EnvConfig":
