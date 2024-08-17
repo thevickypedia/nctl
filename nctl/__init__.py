@@ -6,7 +6,7 @@ import click
 
 from nctl.ngrok import tunnel  # noqa: F401
 
-version = "0.0.0-a"
+version = "0.0.1"
 
 
 @click.command()
