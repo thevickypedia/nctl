@@ -25,7 +25,7 @@ def create_ngrok_config(token: str, filename: str) -> None:
         )
 
 
-def env_loader(filename: str | os.PathLike) -> models.EnvConfig:
+def envfile_loader(filename: str | os.PathLike) -> models.EnvConfig:
     """Loads environment variables based on filetypes.
 
     Args:
@@ -50,6 +50,26 @@ def env_loader(filename: str | os.PathLike) -> models.EnvConfig:
     raise ValueError(
         "\n\tUnsupported format for 'env_file', can be one of (.json, .yaml, .yml, .txt, .text, or null)"
     )
+
+
+def load_env(**kwargs) -> models.EnvConfig:
+    """Merge env vars from env_file with kwargs, giving priority to kwargs.
+
+    See Also:
+        This function allows env vars to be loaded partially from .env files and partially through kwargs.
+
+    Returns:
+        EnvConfig:
+        Returns a reference to the ``EnvConfig`` object.
+    """
+    if env_file := kwargs.get("env_file"):
+        file_env = envfile_loader(env_file).model_dump()
+    elif os.path.isfile(".env"):
+        file_env = envfile_loader(".env").model_dump()
+    else:
+        file_env = {}
+    merged_env = {**file_env, **kwargs}
+    return models.EnvConfig(**merged_env)
 
 
 def run_validations() -> None:

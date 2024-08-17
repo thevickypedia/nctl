@@ -51,7 +51,6 @@ nctl start
 <summary><strong>Sourcing environment variables from an env file</strong></summary>
 
 > _By default, `nctl` will look for a `.env` file in the current working directory._<br>
-> Refer [samples] directory for examples.
 
 </details>
 

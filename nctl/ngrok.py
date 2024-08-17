@@ -1,6 +1,5 @@
 import logging
 import multiprocessing
-import os
 import subprocess
 from typing import Any, Dict
 
@@ -60,12 +59,7 @@ def writer(frame: str) -> None:
 
 def tunnel(**kwargs) -> None:
     """Initiates a ngrok tunnel using the CLI and updates cloudfront distribution."""
-    if env_file := kwargs.get("env_file"):
-        models.env = squire.env_loader(env_file)
-    elif os.path.isfile(".env"):
-        models.env = squire.env_loader(".env")
-    else:
-        models.env = models.EnvConfig(**kwargs)
+    models.env = squire.load_env(**kwargs)
     logger.configure_logging(
         debug=models.env.debug,
         log_config=models.env.log_config,
