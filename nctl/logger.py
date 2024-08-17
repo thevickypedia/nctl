@@ -1,7 +1,8 @@
 import json
-import logging
+import logging.config
 import os
 from datetime import datetime
+from typing import Any, Dict
 
 import yaml
 from pydantic import BaseModel, FilePath
@@ -41,7 +42,7 @@ class LogConfig(BaseModel):
     debug: bool
     log: models.LogOptions
     process: str | None = None
-    log_config: dict | FilePath | None = None
+    log_config: Dict[str, Any] | FilePath | None = None
 
     class Config:
         """Extra configuration for LogConfig object."""

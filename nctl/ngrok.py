@@ -2,6 +2,7 @@ import logging
 import multiprocessing
 import os
 import subprocess
+from typing import Any, Dict
 
 from nctl import aws, logger, models, squire
 
@@ -9,7 +10,7 @@ LOGGER = logging.getLogger("nctl.tunnel")
 
 
 # Have this as a dedicated function to avoid pickling error
-def distribution_handler(public_url: str, env_dump: dict) -> None:
+def distribution_handler(public_url: str, env_dump: Dict[str, Any]) -> None:
     """Updates the cloudfront distribution in a dedicated process.
 
     Args:

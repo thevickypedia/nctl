@@ -2,6 +2,7 @@ import multiprocessing
 import pathlib
 import socket
 from enum import Enum
+from typing import Any, Dict
 
 from pydantic import BaseModel, FilePath, PositiveInt
 from pydantic_settings import BaseSettings
@@ -60,7 +61,7 @@ class EnvConfig(BaseSettings):
     # Logging config
     debug: bool = False
     log: LogOptions = LogOptions.stdout
-    log_config: dict | FilePath | None = None
+    log_config: Dict[str, Any] | FilePath | None = None
 
     @classmethod
     def from_env_file(cls, env_file: pathlib.Path) -> "EnvConfig":

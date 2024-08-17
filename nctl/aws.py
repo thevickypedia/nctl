@@ -22,7 +22,7 @@ class CloudFront:
 
     """
 
-    def __init__(self, env_dump: dict):
+    def __init__(self, env_dump: Dict[str, Any]):
         """Initiates the boto3 client and re-configures the environment variables.
 
         Args:
@@ -86,7 +86,7 @@ class CloudFront:
             with open(models.env.distribution_config) as file:
                 config = json.load(file)
         else:
-            # This shouldn't happen programatically, but just in case
+            # This shouldn't happen programmatically, but just in case
             # https://docs.pydantic.dev/latest/errors/validation_errors/#string_pattern_mismatch
             raise ValidationError.from_exception_data(
                 title="NCTL",
@@ -113,10 +113,13 @@ class CloudFront:
                 error_response=create_response.get("ResponseMetadata"),
             )
 
-    def update_distribution(self, current_config: dict, origin_name: str) -> None:
+    def update_distribution(
+        self, current_config: Dict[str, Any], origin_name: str
+    ) -> None:
         """Updates the origin host of a cloudfront distribution.
 
         Args:
+            current_config: Current configuration as in CloudFront.
             origin_name: Origin name that has to be replaced with.
         """
         etag = current_config["ETag"]
@@ -195,15 +198,15 @@ class CloudFront:
         except WaiterError as error:
             LOGGER.error("Error while waiting for distribution to deploy: %s", error)
         except KeyboardInterrupt:
-            LOGGER.warning("Cloudfront status check suspended")
+            LOGGER.warning("CloudFront status check suspended")
         finally:
             self.store_config(last_response)
 
-    def store_config(self, configuration: dict = None) -> None:
+    def store_config(self, configuration: Dict[str, Any] = None) -> None:
         """Stores the cloudfront distribution config in a YAML file locally.
 
         Args:
-            last_response: Last known response from AWS.
+            configuration: CloudFront distribution configuration.
         """
         os.makedirs(models.env.configdir, exist_ok=True)
         configfile = os.path.join(
